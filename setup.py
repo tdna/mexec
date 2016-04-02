@@ -16,5 +16,5 @@ setup(name='mexec',
       packages=['mexec'],
       long_description=(open('README.rst').read() if exists('README.rst')
                         else ''),
-      install_requires=['docker-py'],
+      install_requires=['docker-py', 'requests'],
       zip_safe=False)
