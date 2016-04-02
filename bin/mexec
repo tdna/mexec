@@ -36,6 +36,7 @@ def print_results(results):
 if __name__ == '__main__':
     desc = 'Execute commands inside docker containers run by marathon.'
     parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument('task_id', help='Mesos task id')
     parser.add_argument('action',
                         choices=['exec', 'inspect'],
                         help='Action on the container')
@@ -51,7 +52,7 @@ if __name__ == '__main__':
 
     mesos = Mesos(args.mesos_master)
     from pprint import pprint
-    tasks = mesos.get_mesos_task_by_name('marathon-lb')
+    tasks = mesos.get_mesos_task_by_name(args.task_id)
     slaves = mesos.get_slave_hostnames(set([task.slave_id for task in tasks]))
 
     for task in tasks:
@@ -66,3 +67,6 @@ if __name__ == '__main__':
                                                     container_callback)
 
         print_results(results)
+
+    if not len(tasks):
+        print('No tasks found!')
