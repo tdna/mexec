@@ -5,23 +5,13 @@ import os
 from mexec.mesos import Mesos
 from mexec.mdocker import Docker
 from docker import Client
+from functools import partial
+from pprint import pprint
 
 
 def set_mesos_host(hosts):
     hosts_str = (hosts or os.environ.get('MESOS_HOST', ''))
     return hosts_str.split(',') if hosts_str else ''
-
-
-def get_docker_callback(action, cli, cmd=''):
-    if action == 'inspect':
-        def f(container): return cli.inspect_container(container)
-    elif action == 'exec':
-        def f(container):
-            return cli.exec_start(cli.exec_create(container, cmd))
-    else:
-        raise Exception('No callback function defined for {}'.format(action))
-
-    return f
 
 
 def print_results(results):
@@ -38,10 +28,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('task_id', help='Mesos task id')
     parser.add_argument('action',
-                        choices=['exec', 'inspect'],
+                        choices=['exec_container', 'inspect', 'top', 'logs'],
                         help='Action on the container')
-    parser.add_argument('-c', '--cmd', default='',
-                        help='Command to execute inside the container')
+    parser.add_argument('--arg', dest='args', action='append', default=[],
+                        type=lambda x: x.split('=', 1),
+                        help='Arguments of the docker action')
     parser.add_argument('--mesos-master', type=set_mesos_host, default='',
                         help='Mesos master host separated by commas eg: ' +
                              'master-1:5050,master-2:5050,master-3:5050')
@@ -51,7 +42,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     mesos = Mesos(args.mesos_master)
-    from pprint import pprint
     tasks = mesos.get_mesos_task_by_name(args.task_id)
     slaves = mesos.get_slave_hostnames(set([task.slave_id for task in tasks]))
 
@@ -60,11 +50,10 @@ if __name__ == '__main__':
                                                    args.docker_port))
         docker = Docker(cli)
         env_var = 'MESOS_TASK_ID={}'.format(task.task_id)
-        docker_kwargs = ({'cmd': args.cmd} if args.cmd else {})
 
-        container_callback = get_docker_callback(args.action, cli, args.cmd)
-        results = docker.containers_by_env_variable(env_var,
-                                                    container_callback)
+        container_callback = partial(getattr(docker, args.action),
+                                     **dict(args.args))
+        results = docker.exec_by_env_variable(env_var, container_callback)
 
         print_results(results)
 
