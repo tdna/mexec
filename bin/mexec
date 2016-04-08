@@ -3,7 +3,7 @@
 import argparse
 import os
 from mexec.mesos import Mesos
-from mexec.mdocker import Docker
+from mexec.docker import Docker
 from docker import Client
 from functools import partial
 from pprint import pprint
@@ -23,6 +23,25 @@ def print_results(results):
             pprint(result)
 
 
+def implicit_cast(value):
+    if value == 'True':
+        return True
+    elif value == 'False':
+        return False
+    elif value.isdigit():
+        return int(value)
+    else:
+        try:
+            return float(value)
+        except ValueError:
+            return value
+
+
+def parse_arg(arg):
+    key, value = arg.split('=', 1)
+    return (key, implicit_cast(value))
+
+
 if __name__ == '__main__':
     desc = 'Execute commands inside docker containers run by marathon.'
     parser = argparse.ArgumentParser(description=desc)
@@ -31,8 +50,7 @@ if __name__ == '__main__':
                         choices=['exec_container', 'inspect', 'top', 'logs'],
                         help='Action on the container')
     parser.add_argument('--arg', dest='args', action='append', default=[],
-                        type=lambda x: x.split('=', 1),
-                        help='Arguments of the docker action')
+                        type=parse_arg, help='Arguments of the docker action')
     parser.add_argument('--mesos-master', type=set_mesos_host, default='',
                         help='Mesos master host separated by commas eg: ' +
                              'master-1:5050,master-2:5050,master-3:5050')
