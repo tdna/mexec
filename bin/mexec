@@ -60,7 +60,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     mesos = Mesos(args.mesos_master)
-    tasks = mesos.get_mesos_task_by_name(args.task_id)
+    tasks = mesos.get_mesos_tasks(args.task_id)
     slaves = mesos.get_slave_hostnames(set([task.slave_id for task in tasks]))
 
     for task in tasks:

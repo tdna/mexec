@@ -3,10 +3,11 @@ from collections import namedtuple, deque
 
 
 MESOS_TASK_LIMIT = 10000
-MesosTask = namedtuple('mesos_slave', ['slave_id', 'task_id'])
+MesosTask = namedtuple('mesos_task', ['slave_id', 'task_id'])
 
 
 class Mesos(object):
+
     def __init__(self, hosts):
         self.hosts = hosts
 
@@ -15,7 +16,13 @@ class Mesos(object):
                 in self._call_endpoint('slaves').get('slaves', [])
                 if slave['id'] in slave_ids}
 
-    def get_mesos_task_by_name(self, name):
+    def get_mesos_tasks(self, name):
+        def find(tasks):
+            return [MesosTask(task['slave_id'], task['id'])
+                    for task in tasks
+                    if task['name'] == name and
+                    task['state'] == 'TASK_RUNNING']
+
         def get_tasks(tasks=None, offset=0):
             if not tasks:
                 tasks = []
@@ -24,14 +31,12 @@ class Mesos(object):
                                .format(offset, MESOS_TASK_LIMIT))
             tasks_chunk = self._call_endpoint(endpoint_entity)
             if len(tasks_chunk.get('tasks', [])):
-                return get_tasks(tasks + tasks_chunk['tasks'],
+                return get_tasks(tasks + find(tasks_chunk['tasks']),
                                  offset + MESOS_TASK_LIMIT)
             else:
                 return tasks
 
-        return [MesosTask(task['slave_id'], task['id'])
-                for task in get_tasks()
-                if task['name'] == name and task['state'] == 'TASK_RUNNING']
+        return get_tasks()
 
     def _call_endpoint(self, endpoint):
         def loop(hosts):
