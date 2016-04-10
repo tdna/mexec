@@ -2,11 +2,12 @@
 
 import argparse
 import os
-from mexec.mesos import Mesos
-from mexec.docker import Docker
 from docker import Client
 from functools import partial
 from pprint import pprint
+
+from mexec.mesos import Mesos
+from mexec.docker import Docker
 
 
 def set_mesos_host(hosts):

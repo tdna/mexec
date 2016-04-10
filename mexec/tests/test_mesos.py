@@ -1,6 +1,6 @@
-from mexec.mesos import Mesos, MesosTask
-
 import pytest
+
+from mexec.mesos import Mesos, MesosTask
 
 
 @pytest.fixture

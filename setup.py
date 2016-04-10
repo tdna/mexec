@@ -6,7 +6,7 @@ from setuptools import setup
 
 
 setup(name='mexec',
-      version='0.1',
+      version='0.1.0',
       description='Execute commands inside docker containers run by mesos',
       url='http://github.com/tdna/mexec',
       maintainer='Andras Toth',
@@ -16,6 +16,7 @@ setup(name='mexec',
       packages=['mexec'],
       long_description=(open('README.rst').read() if exists('README.rst')
                         else ''),
-      install_requires=['docker-py', 'requests'],
+      install_requires=['pytest', 'docker-py', 'requests'],
       tests_require=['pytest', 'pytest-mock'],
+      setup_requires=['pytest-runner'],
       zip_safe=False)
