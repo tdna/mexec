@@ -11,8 +11,8 @@ class Docker(object):
     def top(self, container, **kwargs):
         return self.cli.top(container, **kwargs)
 
-    def inspect(self, container, **kwargs):
-        return self.cli.inspect_container(container, **kwargs)
+    def inspect(self, container):
+        return self.cli.inspect_container(container)
 
     def exec_container(self, container, cmd):
         return self.cli.exec_start(self.cli.exec_create(container, cmd))

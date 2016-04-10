@@ -43,7 +43,7 @@ class Mesos(object):
             try:
                 r = requests.get('http://{}/{}'.format(hosts.pop(), endpoint))
                 result = r.json()
-                if not len(result.values()[0]):
+                if not len(list(result.values())[0]):
                     return loop(hosts)
                 else:
                     return result

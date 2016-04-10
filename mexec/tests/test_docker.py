@@ -71,10 +71,6 @@ class TestDocker(object):
         assert container_data['inspect'][0] == docker.inspect('containerdata')
         cli.inspect_container.assert_called_once_with('containerdata')
 
-        assert (container_data['inspect'][1] ==
-                docker.inspect('containerdata', key='val'))
-        cli.inspect_container.assert_called_with('containerdata', key='val')
-
     def test_exec_container(self, mocker, docker, cli, container_data):
         assert container_data['exec'] == docker.exec_container('containerdata',
                                                                'ls -l')

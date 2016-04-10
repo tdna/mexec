@@ -11,8 +11,19 @@ from mexec.docker import Docker
 
 
 def set_mesos_host(hosts):
-    hosts_str = (hosts or os.environ.get('MESOS_HOST', ''))
+    hosts_str = hosts or os.environ.get('MEXEC_MESOS_MASTER', '')
+    if not hosts_str:
+        raise Exception('Argument --mesos-master is required or ' +
+                        'MEXEC_MESOS_MASTER env variable is have to be set!')
     return hosts_str.split(',') if hosts_str else ''
+
+
+def set_docker_port(port):
+    port = port or os.environ.get('MEXEC_DOCKER_PORT', '')
+    if not port:
+        raise Exception('Argument --docker-port is required or ' +
+                        'MEXEC_DOCKER_PORT env variable is have to be set!')
+    return port
 
 
 def print_results(results):
@@ -55,7 +66,7 @@ if __name__ == '__main__':
     parser.add_argument('--mesos-master', type=set_mesos_host, default='',
                         help='Mesos master host separated by commas eg: ' +
                              'master-1:5050,master-2:5050,master-3:5050')
-    parser.add_argument('--docker-port', default='2376',
+    parser.add_argument('--docker-port', type=set_docker_port, default='',
                         help='Docker tcp port')
 
     args = parser.parse_args()
