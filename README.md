@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tdna/mexec.svg?branch=master)](https://travis-ci.org/tdna/mexec)
+
 # Mexec
 
 Mexec is a Python module for execute commands inside docker containers run on Mesos.
