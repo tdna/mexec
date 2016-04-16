@@ -17,7 +17,7 @@ setup(name='mexec',
       packages=['mexec'],
       long_description=(open('README.md').read() if exists('README.md')
                         else ''),
-      install_requires=['pytest', 'docker-py', 'requests'],
-      tests_require=['pytest', 'pytest-mock'],
+      install_requires=['docker-py', 'requests'],
+      tests_require=['pytest-mock', 'pytest'],
       setup_requires=['pytest-runner'],
       zip_safe=False)
