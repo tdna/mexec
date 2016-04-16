@@ -2,14 +2,14 @@
 
 Mexec is a Python module for execute commands inside docker containers run on Mesos.
 
-The aws-cli package works on Python versions:
+The mexec package works on Python versions:
 
 * 2.7.x and greater
 * 3.4.x and greater
 
 ## Installation
 
-The easiest way to install aws-cli is to use pip:
+The easiest way to install mexec is to use pip:
 
 ```sh
 $ pip install mexec

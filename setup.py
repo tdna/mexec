@@ -15,7 +15,7 @@ setup(name='mexec',
       license='BSD',
       keywords='mesos docker',
       packages=['mexec'],
-      long_description=(open('README.rst').read() if exists('README.rst')
+      long_description=(open('README.md').read() if exists('README.md')
                         else ''),
       install_requires=['pytest', 'docker-py', 'requests'],
       tests_require=['pytest', 'pytest-mock'],
