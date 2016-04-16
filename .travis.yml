@@ -4,5 +4,6 @@ python:
   - "3.4"
   - "3.5"
 
-install: "pip install -r requirements.txt"
+install: "pip install --upgrade pytest pytest-mock"
+before_script: export PYTHONPATH=$PYTHONPATH:$(pwd)
 script: "py.test mexec/tests"
